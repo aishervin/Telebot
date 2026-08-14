@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onErrorCaptured, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
-import { Bot, Moon, Sun, Monitor, Github, Send, TriangleAlert } from 'lucide-vue-next';
+import { Moon, Sun, Monitor, Github, Send, TriangleAlert } from 'lucide-vue-next';
 import { version as appVersion } from '../package.json';
 import ExpandableText from '@/components/ExpandableText.vue';
 import MethodSidebar from '@/components/MethodSidebar.vue';
@@ -117,7 +117,7 @@ onUnmounted(() => {
         <a
           :href="homeHref"
           class="group flex min-w-0 items-center gap-3 rounded-lg transition focus:outline-none focus-visible:ring-4 focus-visible:ring-signal-blue/15 dark:focus-visible:ring-signal-blueDark/25"
-          aria-label="Bot Studio home"
+          aria-label="TELEbot home"
           @click="onLogoClick"
         >
           <div class="relative shrink-0">
@@ -128,14 +128,14 @@ onUnmounted(() => {
             <div
               class="relative grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-signal-blue to-signal-blueHover text-paper-50 shadow-glow transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-105 dark:from-signal-blueDark dark:to-signal-blueBright dark:shadow-glowDark"
             >
-              <Bot class="h-6 w-6" />
+              <img src="https://raw.githubusercontent.com/aishervin/Pic/refs/heads/main/Logo.png" alt="TELEbot Logo" class="h-8 w-8 object-contain" />
             </div>
           </div>
           <div class="flex min-w-0 items-baseline gap-1.5">
             <h1
               class="min-w-0 truncate bg-gradient-to-r from-ink-950 via-ink-950 to-signal-blueHover bg-clip-text text-xl font-black tracking-normal text-transparent dark:from-paper-50 dark:via-paper-50 dark:to-signal-blueBright"
             >
-              Bot Studio
+              TELEbot
             </h1>
             <span class="shrink-0 font-mono text-xs font-bold text-ink-700 dark:text-paper-300">
               v{{ appVersion }}
@@ -174,7 +174,7 @@ onUnmounted(() => {
             target="_blank"
             rel="noreferrer"
             title="SHΞN™"
-            aria-label="View Bot Studio source on GitHub"
+            aria-label="View TELEbot source on GitHub"
           >
             <Github class="h-4 w-4" />
           </a>
@@ -296,15 +296,15 @@ onUnmounted(() => {
       class="mx-auto mt-8 flex w-full max-w-[1540px] flex-col items-center justify-center gap-2 px-4 pb-5 text-center text-sm font-semibold text-ink-700 dark:text-paper-300 sm:flex-row sm:justify-between sm:text-left"
     >
       <div>
-        Powered by
+        ☬Exclusive 
         <a
           class="font-black text-signal-blueHover hover:underline dark:text-signal-blueDark dark:hover:text-signal-blueBright"
-          href="https://github.com/aishervin"
+          href="https://t.me/shervini"
           target="_blank"
           rel="noreferrer"
-          aria-label="SHΞN™ on GitHub"
+          aria-label="SHΞN™ on Telegram"
         >
-          @SHΞN™
+          SHΞN™ made
         </a>
       </div>
 
