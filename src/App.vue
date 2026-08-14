@@ -128,7 +128,7 @@ onUnmounted(() => {
             <div
               class="relative grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-signal-blue to-signal-blueHover text-paper-50 shadow-glow transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-105 dark:from-signal-blueDark dark:to-signal-blueBright dark:shadow-glowDark"
             >
-              <img src="https://raw.githubusercontent.com/aishervin/Pic/refs/heads/main/Logo.png" alt="TELEbot Logo" class="h-8 w-8 object-contain" />
+              <img src="/Logo.png" alt="TELEbot Logo" class="h-8 w-8 object-contain" />
             </div>
           </div>
           <div class="flex min-w-0 items-baseline gap-1.5">
@@ -189,7 +189,7 @@ onUnmounted(() => {
       <TriangleAlert class="h-8 w-8 text-signal-red" />
       <h2 class="text-2xl font-black leading-none tracking-normal">Something went wrong</h2>
       <p class="max-w-md text-sm leading-7 text-ink-700 dark:text-paper-300">
-        Bot Studio hit an unexpected error and can't continue safely. Reloading should fix it.
+        TELEbot hit an unexpected error and can't continue safely. Reloading should fix it.
       </p>
       <button
         type="button"
