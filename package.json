@@ -1,16 +1,16 @@
 {
-  "name": "bot-studio",
+  "name": "Telebot",
   "version": "1.5.0",
   "private": true,
   "description": "A browser-based Telegram Bot API workspace for exploring methods, building request payloads, and sending test calls.",
   "license": "GPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/telefunction/bot-studio.git"
+    "url": "git+https://github.com/aishervin/Telebot.git"
   },
-  "homepage": "https://telefunction.github.io/bot-studio/",
+  "homepage": "https://aishervin.github.io/Telebot/",
   "bugs": {
-    "url": "https://github.com/telefunction/bot-studio/issues"
+    "url": "https://github.com/aishervin/Telebot/issues"
   },
   "type": "module",
   "scripts": {

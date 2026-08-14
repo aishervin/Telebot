@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig, type Plugin, type ResolvedConfig } from 'vite';
 
 const FONT_EXTENSIONS = /\.(?:ttf|woff2?|otf)$/i;
-const SITE_URL = 'https://telefunction.github.io/bot-studio/';
+const SITE_URL = 'https://aishervin.github.io/Telebot/';
 
 function resolveOutDir(config: ResolvedConfig): string {
   return path.isAbsolute(config.build.outDir)

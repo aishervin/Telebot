@@ -170,10 +170,10 @@ onUnmounted(() => {
           </button>
           <a
             class="icon-button"
-            href="https://github.com/telefunction/bot-studio"
+            href="https://github.com/aishervin/Telebot"
             target="_blank"
             rel="noreferrer"
-            title="telefunction"
+            title="SHΞN™"
             aria-label="View Bot Studio source on GitHub"
           >
             <Github class="h-4 w-4" />
@@ -299,12 +299,12 @@ onUnmounted(() => {
         Powered by
         <a
           class="font-black text-signal-blueHover hover:underline dark:text-signal-blueDark dark:hover:text-signal-blueBright"
-          href="https://github.com/telefunction"
+          href="https://github.com/aishervin"
           target="_blank"
           rel="noreferrer"
-          aria-label="Telefunction on GitHub"
+          aria-label="SHΞN™ on GitHub"
         >
-          @Telefunction
+          @SHΞN™
         </a>
       </div>
 
