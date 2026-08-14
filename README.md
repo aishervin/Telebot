@@ -1,6 +1,6 @@
 <div align="center">
 
-# TELEbot — Bot Studio
+# ☬TELEbot™ — in BROWSER Studio !
 
 **An advanced, lightning-fast browser workspace for the Telegram Bot API.**
 
