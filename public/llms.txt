@@ -1,8 +1,8 @@
-# Bot Studio
+# Telebot
 
-> Bot Studio is a browser-based Telegram Bot API workspace for exploring methods, building request payloads, and sending test calls directly to Telegram.
+> Bot  is a browser-based Telegram Bot API workspace for exploring methods, building request payloads, and sending test calls directly to Telegram.
 
-Bot Studio runs entirely client-side — your bot token is only ever used to call `https://api.telegram.org` directly from your browser and is never stored or sent anywhere else.
+Telebot runs entirely client-side — your bot token is only ever used to call `https://api.telegram.org` directly from your browser and is never stored or sent anywhere else.
 
 ## Features
 
@@ -16,4 +16,4 @@ Bot Studio runs entirely client-side — your bot token is only ever used to cal
 ## Docs
 
 - [Telegram Bot API reference](https://core.telegram.org/bots/api): the official API this tool is built against.
-- [Project source](https://github.com/telefunction/bot-studio): source code and the schema-update workflow.
+- [Project source](https://github.com/aishervin/Telebot): source code and the schema-update workflow.
