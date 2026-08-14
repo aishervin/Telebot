@@ -14,6 +14,18 @@
 
 Everything runs natively in your browser: your bot token is used exclusively to call `https://api.telegram.org` directly, ensuring it is never stored, tracked, or sent anywhere else.
 
+<br>
+
+<div align="center">
+
+### Press
+# [ENTER](https://aishervin.github.io/Telebot)
+### to start
+
+</div>
+
+<br>
+
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## Features
