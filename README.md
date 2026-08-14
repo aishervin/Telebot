@@ -1,6 +1,6 @@
 <div align="center">
 
-# ☬TELEbot™ — in BROWSER Studio !
+# ☬TELEbot™ 
 
 **An advanced, lightning-fast browser workspace for the Telegram Bot API.**
 
@@ -18,9 +18,9 @@ Everything runs natively in your browser: your bot token is used exclusively to 
 
 <div align="center">
 
-### Press
+### PRESS
 # [ENTER](https://aishervin.github.io/Telebot)
-### to start
+### TO START
 
 </div>
 
