@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telebot Studio</title>
+<style>
+/* ============================================================
+   TELEBOT STUDIO — SINGLE FILE EDITION
+   Edit the CSS variables below to change the entire look.
+   ============================================================ */
+
+:root {
+  --bg-page: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-sidebar: #f8f9fa;
+  --bg-input: #f3f4f6;
+  --bg-hover: #e5e7eb;
+  --bg-code: #0f172a;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-on-accent: #ffffff;
+  --border-color: #e5e7eb;
+  --border-focus: #0088cc;
+  --accent: #0088cc;
+  --accent-hover: #0077b3;
+  --accent-soft: rgba(0,136,204,0.08);
+  --danger: #ef4444;
+  --danger-soft: rgba(239,68,68,0.08);
+  --success: #22c55e;
+  --success-soft: rgba(34,197,94,0.08);
+  --warning: #f59e0b;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  --sidebar-width: 300px;
+  --header-height: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-page: #17212b;
+    --bg-panel: #232e3c;
+    --bg-sidebar: #1c252f;
+    --bg-input: #1c252f;
+    --bg-hover: #2a3744;
+    --bg-code: #0b0f19;
+    --text-primary: #f5f5f5;
+    --text-secondary: #b0b8c1;
+    --text-muted: #6b7885;
+    --text-on-accent: #ffffff;
+    --border-color: #3a4653;
+    --border-focus: #3390ec;
+    --accent: #3390ec;
+    --accent-hover: #2a7fd6;
+    --accent-soft: rgba(51,144,236,0.12);
+    --danger: #ff6b6b;
+    --danger-soft: rgba(255,107,107,0.12);
+    --success: #4ade80;
+    --success-soft: rgba(74,222,128,0.12);
+    --warning: #fbbf24;
+    --shadow: 0 1px 3px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.35);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg-page: #17212b;
+  --bg-panel: #232e3c;
+  --bg-sidebar: #1c252f;
+  --bg-input: #1c252f;
+  --bg-hover: #2a3744;
+  --bg-code: #0b0f19;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b0b8c1;
+  --text-muted: #6b7885;
+  --text-on-accent: #ffffff;
+  --border-color: #3a4653;
+  --border-focus: #3390ec;
+  --accent: #3390ec;
+  --accent-hover: #2a7fd6;
+  --accent-soft: rgba(51,144,236,0.12);
+  --danger: #ff6b6b;
+  --danger-soft: rgba(255,107,107,0.12);
+  --success: #4ade80;
+  --success-soft: rgba(74,222,128,0.12);
+  --warning: #fbbf24;
+  --shadow: 0 1px 3px rgba(0,0,0,0.25);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: var(--font); background: var(--bg-page); color: var(--text-primary);
+  min-height: 100vh; overflow-x: hidden;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.app {
+  display: grid; grid-template-rows: var(--header-height) 1fr;
+  grid-template-columns: var(--sidebar-width) 1fr 400px;
+  grid-template-areas: "header header header" "sidebar main result";
+  height: 100vh; max-width: 1600px; margin: 0 auto;
+}
+@media (max-width: 1200px) {
+  .app { grid-template-columns: var(--sidebar-width) 1fr; grid-template-areas: "header header" "sidebar main"; }
+  .result-rail { display: none; }
+}
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; }
+  .sidebar { display: none; position: fixed; z-index: 50; inset: 0; width: 100%; height: 100%; }
+  .sidebar.open { display: flex; }
+}
+
+.header {
+  grid-area: header; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-panel);
+  position: sticky; top: 0; z-index: 30;
+}
+.header-left { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.logo {
+  width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  border-radius: 10px; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 14px;
+}
+.header-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+.header-version { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+  background: var(--bg-input); color: var(--text-secondary); display: grid; place-items: center;
+  transition: all 0.2s; font-size: 1rem;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+.sidebar {
+  grid-area: sidebar; display: flex; flex-direction: column;
+  border-right: 1px solid var(--border-color); background: var(--bg-sidebar); overflow: hidden;
+}
+.sidebar-search { padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; }
+.sidebar-search input, .sidebar-search select {
+  width: 100%; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+  background: var(--bg-input); outline: none; font-size: 0.875rem;
+}
+.sidebar-search input:focus, .sidebar-search select:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+.method-list { flex: 1; overflow-y: auto; padding: 8px; }
+.method-item {
+  display: block; width: 100%; text-align: left; padding: 8px 12px; border-radius: var(--radius-sm);
+  border: none; background: transparent; color: var(--text-secondary); font-size: 0.875rem;
+  cursor: pointer; transition: all 0.15s; margin-bottom: 2px;
+}
+.method-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.method-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.method-item small { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+
+.main { grid-area: main; padding: 24px; overflow-y: auto; background: var(--bg-page); }
+.panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+
+.method-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+.method-name { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; word-break: break-word; }
+.method-desc { margin: 8px 0 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.9375rem; }
+.method-desc.collapsed { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.doc-link { color: var(--accent); text-decoration: none; font-size: 0.875rem; font-weight: 600; white-space: nowrap; padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); }
+.doc-link:hover { background: var(--accent-soft); }
+
+.token-box { margin-bottom: 20px; }
+.token-label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+.token-input-wrap { display: flex; gap: 8px; }
+.token-input { flex: 1; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); font-family: var(--font-mono); font-size: 0.875rem; outline: none; }
+.token-input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+.token-toggle { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.875rem; color: var(--text-secondary); }
+.token-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.field-group { margin-bottom: 16px; }
+.field-label { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+.field-label .required { color: var(--danger); }
+.field-label .type-tag { font-size: 0.7rem; font-weight: 500; color: var(--text-muted); background: var(--bg-hover); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); }
+.field-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+.field-control {
+  width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+  background: var(--bg-input); font-size: 0.9375rem; outline: none; transition: all 0.2s; min-height: 42px;
+}
+.field-control:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea.field-control { resize: vertical; min-height: 80px; font-family: var(--font-mono); font-size: 0.875rem; }
+select.field-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+.file-field { display: flex; gap: 8px; align-items: center; }
+.file-mode-btn { padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.8rem; color: var(--text-secondary); }
+.file-mode-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.file-name { font-size: 0.8rem; color: var(--text-muted); }
+
+.checkbox-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 0; }
+.checkbox-wrap input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+
+.builder-card { border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; background: var(--bg-page); margin-top: 6px; }
+.builder-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.builder-title { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+.builder-branch-tabs { display: flex; gap: 4px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; }
+.builder-branch-tab { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.8rem; white-space: nowrap; cursor: pointer; color: var(--text-secondary); }
+.builder-branch-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.builder-add-btn { padding: 6px 12px; border-radius: 6px; border: 1px dashed var(--border-color); background: transparent; color: var(--accent); font-size: 0.8rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 8px; }
+.builder-add-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+.builder-remove-btn { width: 24px; height: 24px; border-radius: 6px; border: none; background: var(--danger-soft); color: var(--danger); font-size: 1rem; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+.builder-remove-btn:hover { background: var(--danger); color: #fff; }
+
+.submit-bar { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
+.btn { padding: 10px 20px; border-radius: var(--radius-sm); border: 1px solid transparent; font-size: 0.9375rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--text-on-accent); box-shadow: 0 2px 8px rgba(0,136,204,0.25); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,136,204,0.35); }
+.btn-primary:active { transform: translateY(0); }
+
+.result-rail { grid-area: result; border-left: 1px solid var(--border-color); background: var(--bg-sidebar); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.result-section h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin: 0 0 10px; display: flex; justify-content: space-between; align-items: center; }
+.code-block { background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 16px; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
+.code-block .tok-key { color: #93c5fd; }
+.code-block .tok-string { color: #86efac; }
+.code-block .tok-number { color: #fca5a5; }
+.code-block .tok-bool { color: #c4b5fd; }
+.code-block .tok-null { color: #94a3b8; }
+.code-block .tok-punct { color: #cbd5e1; }
+.copy-btn { font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-secondary); cursor: pointer; }
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.toast-stack { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; width: 320px; }
+.toast { padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-panel); box-shadow: var(--shadow-lg); animation: toastIn 0.3s ease; display: flex; flex-direction: column; gap: 4px; }
+.toast.toast-success { border-color: var(--success); background: var(--success-soft); }
+.toast.toast-error { border-color: var(--danger); background: var(--danger-soft); }
+.toast.toast-warning { border-color: var(--warning); background: rgba(245,158,11,0.08); }
+.toast-title { font-weight: 700; font-size: 0.875rem; }
+.toast-msg { font-size: 0.8rem; color: var(--text-secondary); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 60; display: grid; place-items: center; padding: 20px; animation: fadeIn 0.2s ease; }
+.modal-panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; max-width: 560px; width: 100%; box-shadow: var(--shadow-lg); animation: modalPop 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalPop { from { opacity: 0; transform: scale(0.97) translateY(4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.not-found { text-align: center; padding: 60px 20px; }
+.not-found h2 { font-size: 1.5rem; margin-bottom: 8px; }
+.not-found p { color: var(--text-secondary); margin-bottom: 20px; }
+.suggestion-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.suggestion-chip { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-input); color: var(--accent); font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+.suggestion-chip:hover { background: var(--accent-soft); }
+
+.loading { text-align: center; padding: 40px; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.form-error { margin-top: 16px; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--danger); background: var(--danger-soft); color: var(--danger); font-size: 0.875rem; font-weight: 600; }
+.mobile-toggle { display: none; }
+@media (max-width: 768px) { .mobile-toggle { display: grid; } }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <header class="header">
+    <a href="./" class="header-left" id="logo-link">
+      <div class="logo">TB</div>
+      <div>
+        <div class="header-title">Telebot Studio</div>
+        <div class="header-version">v2.0.0</div>
+      </div>
+    </a>
+    <div class="header-actions">
+      <button class="icon-btn mobile-toggle" id="btn-menu" title="Menu">&#9776;</button>
+      <button class="icon-btn" id="btn-theme" title="Toggle Theme">&#127763;</button>
+      <button class="icon-btn" id="btn-privacy" title="Privacy">&#128274;</button>
+      <a class="icon-btn" href="https://github.com/aishervin/Telebot" target="_blank" rel="noopener" title="GitHub">&#11088;</a>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-search">
+      <input type="text" id="search-input" placeholder="Search methods..." autocomplete="off">
+      <select id="category-select"><option>All</option></select>
+    </div>
+    <div class="method-list" id="method-list"><div class="loading">Loading schema...</div></div>
+    <div class="sidebar-footer" id="sidebar-footer">0 methods</div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="empty-state" id="empty-state">
+      <h2>Welcome to Telebot Studio</h2>
+      <p>Select a method from the sidebar to start building requests.</p>
+    </div>
+    <div class="panel" id="method-panel" style="display:none;">
+      <div class="method-header">
+        <div>
+          <h1 class="method-name" id="method-name">Method</h1>
+          <p class="method-desc collapsed" id="method-desc"></p>
+        </div>
+        <a href="#" class="doc-link" id="doc-link" target="_blank" rel="noopener">Docs &#8599;</a>
+      </div>
+
+      <div class="token-box">
+        <label class="token-label">Bot Token</label>
+        <div class="token-input-wrap">
+          <input type="password" class="token-input" id="token-input" placeholder="123456:ABC-DEF..." autocomplete="off">
+          <button class="token-toggle" id="token-toggle">Show</button>
+        </div>
+      </div>
+
+      <form id="param-form" onsubmit="return false;">
+        <div id="fields-container"></div>
+        <div class="form-error" id="form-error" style="display:none;"></div>
+        <div class="submit-bar">
+          <button type="submit" class="btn btn-primary" id="btn-submit">&#128228; Submit to Telegram</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="not-found" id="not-found" style="display:none;">
+      <h2>404 &mdash; Method Not Found</h2>
+      <p id="not-found-path"></p>
+      <div class="suggestion-list" id="suggestion-list"></div>
+    </div>
+  </main>
+
+  <aside class="result-rail" id="result-rail">
+    <div class="result-section">
+      <h3>Request JSON <button class="copy-btn" id="copy-req">Copy</button></h3>
+      <textarea class="code-block" id="request-json" style="min-height:180px; resize:vertical; color:inherit; background:var(--bg-input);" spellcheck="false">{}</textarea>
+    </div>
+    <div class="result-section">
+      <h3>Response <button class="copy-btn" id="copy-res">Copy</button></h3>
+      <div class="code-block" id="response-block"><span class="tok-null">Waiting...</span></div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<div class="modal-overlay" id="privacy-modal" style="display:none;">
+  <div class="modal-panel">
+    <h2 style="margin-top:0;">Privacy &amp; Security</h2>
+    <p style="line-height:1.7; color:var(--text-secondary);">
+      Your bot token is used <strong>only</strong> to call <code>https://api.telegram.org</code> directly from your browser.
+      It is <strong>never</strong> stored on any server or sent anywhere else. Everything runs client-side.
+    </p>
+    <div style="text-align:right; margin-top:20px;">
+      <button class="btn btn-primary" id="privacy-ok">Got it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* ============================================================
+   TELEBOT STUDIO — SINGLE FILE EDITION
+   All JavaScript logic. Organized into sections.
+   ============================================================ */
+
+const SCHEMA_URL = './schema/bot-api.json';
+
+const state = {
+  schema: null,
+  selected: null,
+  values: {},
+  requestJson: '{}',
+  requestJsonError: '',
+  token: localStorage.getItem('telebot-token') || '',
+  search: '',
+  category: 'All',
+  formError: '',
+  response: { status: 'waiting', payload: null, error: '' },
+  notices: [],
+  notFound: false,
+  notFoundPath: '',
+  loadingSchema: true,
+  theme: localStorage.getItem('telebot-theme') || 'system',
+  syncingFromRequest: false,
+  syncingFromValues: false,
+};
+let noticeId = 0;
+
+const $ = (id) => document.getElementById(id);
+const el = {
+  app: $('app'), sidebar: $('sidebar'), methodList: $('method-list'),
+  categorySelect: $('category-select'), searchInput: $('search-input'),
+  sidebarFooter: $('sidebar-footer'), main: $('main'), emptyState: $('empty-state'),
+  methodPanel: $('method-panel'), notFound: $('not-found'), methodName: $('method-name'),
+  methodDesc: $('method-desc'), docLink: $('doc-link'), tokenInput: $('token-input'),
+  tokenToggle: $('token-toggle'), fieldsContainer: $('fields-container'),
+  formError: $('form-error'), btnSubmit: $('btn-submit'), requestJson: $('request-json'),
+  responseBlock: $('response-block'), toastStack: $('toast-stack'),
+  privacyModal: $('privacy-modal'), suggestionList: $('suggestion-list'),
+  notFoundPath: $('not-found-path'), btnMenu: $('btn-menu'), btnTheme: $('btn-theme'),
+  btnPrivacy: $('btn-privacy'), privacyOk: $('privacy-ok'), copyReq: $('copy-req'),
+  copyRes: $('copy-res'), logoLink: $('logo-link'),
+};
+
+/* ===== TELEGRAM UTILS ===== */
+const dangerousMethods = new Set([
+  'deleteWebhook','setWebhook','banChatMember','unbanChatMember',
+  'restrictChatMember','deleteMessage','deleteMessages','leaveChat','close','logOut'
+]);
+const primitiveTypeNames = new Set(['String','Integer','Float','Boolean','True','InputFile']);
+
+function normalizeToken(t){ const tr=t.trim(); return tr.startsWith('bot')?tr.slice(3):tr; }
+function maskToken(t){ const c=normalizeToken(t); if(!c) return ''; const [id,sec='']=c.split(':'); if(!sec) return c.slice(0,5)+'...'; return id+':'+sec.slice(0,4)+'...'+sec.slice(-3); }
+function displayName(n){ return n.replace(/_/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase()); }
+function typeWords(t){ return [...(t.match(/\b[A-Z][A-Za-z0-9]*\b/g)||[])].map(w=>w); }
+function hasType(t,name){ return new RegExp('\\b'+name+'\\b','i').test(t); }
+function allowsString(t){ return hasType(t,'String'); }
+function isPureNumberType(t){ return /^\s*(Integer|Float)\s*$/i.test(t); }
+
+function isJsonType(param){
+  const type=param.type, desc=param.description.toLowerCase();
+  const custom=typeWords(type).filter(w=>!primitiveTypeNames.has(w)&&w!=='Array');
+  return hasType(type,'Array')||hasType(type,'Object')||custom.length>0||desc.includes('json-serialized');
+}
+
+function inferKind(param){
+  if(hasType(param.type,'InputFile')) return 'file';
+  if((hasType(param.type,'Boolean')||hasType(param.type,'True'))&&!allowsString(param.type)) return 'boolean';
+  if(isPureNumberType(param.type)) return 'number';
+  if(isJsonType(param)) return 'json';
+  if(param.name==='text'||param.name.includes('caption')||param.description.length>120) return 'textarea';
+  return 'text';
+}
+
+function fileAccept(param){
+  const n=param.name.toLowerCase();
+  if(n.includes('photo')||n.includes('thumbnail')||n.includes('cover')) return 'image/*';
+  if(n.includes('video')||n.includes('animation')) return 'video/*';
+  if(n.includes('audio')||n.includes('voice')) return 'audio/*';
+  if(n.includes('sticker')) return 'image/*,video/*,.tgs';
+  if(n.includes('certificate')) return '.pem,.crt,.cer';
+  return '';
+}
+
+function defaultValues(method){
+  if(!method) return {};
+  return Object.fromEntries(method.parameters.map(p=>{
+    const k=inferKind(p);
+    if(k==='boolean') return [p.name,false];
+    if(k==='file') return [p.name,{mode:'text',text:'',file:null}];
+    return [p.name,''];
+  }));
+}
+
+function fileParamValue(v){
+  if(!v||typeof v!=='object') return v;
+  return v.mode==='file'?(v.file||undefined):(v.text||undefined);
+}
+
+function parseValue(type,value){
+  if(value instanceof File) return value;
+  if(typeof value==='boolean') return value;
+  const trimmed=String(value||'').trim(); if(!trimmed) return undefined;
+  if(hasType(type,'Integer')&&allowsString(type)&&/^-?\d+$/.test(trimmed)) return Number.parseInt(trimmed,10);
+  if(/^\s*Integer\s*$/i.test(type)){ const p=Number.parseInt(trimmed,10); return Number.isNaN(p)?trimmed:p; }
+  if(/^\s*Float\s*$/i.test(type)){ const p=Number.parseFloat(trimmed); return Number.isNaN(p)?trimmed:p; }
+  if(trimmed.startsWith('{')||trimmed.startsWith('[')||hasType(type,'Array')||hasType(type,'Object')||typeWords(type).some(w=>!primitiveTypeNames.has(w)&&w!=='Array')){
+    try{ return JSON.parse(trimmed); }catch{ return trimmed; }
+  }
+  return trimmed;
+}
+
+function parseRequestJson(json){
+  const t=json.trim(); if(!t) return {};
+  const parsed=JSON.parse(t);
+  if(!parsed||Array.isArray(parsed)||typeof parsed!=='object') throw new Error('Request JSON must be an object.');
+  return parsed;
+}
+
+function buildPayload(method,values){
+  const payload={}; if(!method) return payload;
+  method.parameters.forEach(param=>{
+    const raw=inferKind(param)==='file'?fileParamValue(values[param.name]):values[param.name];
+    const parsed=parseValue(param.type,raw);
+    if(parsed===undefined||parsed==='') return;
+    if(parsed===false&&!param.required) return;
+    payload[param.name]=parsed;
+  });
+  return payload;
+}
+
+function buildRequestInitFromPayload(payload){
+  const hasFile=Object.values(payload).some(v=>v instanceof File);
+  if(!hasFile) return { headers:{'content-type':'application/json'}, body: JSON.stringify(payload) };
+  const fd=new FormData();
+  Object.entries(payload).forEach(([k,v])=>{
+    if(v instanceof File){ fd.append(k,v,v.name); return; }
+    if(v!==undefined&&v!=='') fd.append(k,typeof v==='object'?JSON.stringify(v):String(v));
+  });
+  return { body: fd };
+}
+
+function buildPreviewPayload(method,values){
+  return Object.fromEntries(Object.entries(buildPayload(method,values)).map(([k,v])=>[
+    k, v instanceof File ? {file:v.name,size:v.size,type:v.type||'application/octet-stream'} : v
+  ]));
+}
+
+function missingRequiredFromPayload(method,payload){
+  if(!method) return [];
+  return method.parameters.filter(param=>{
+    const v=payload[param.name];
+    if(v instanceof File) return false;
+    return param.required&&(v===undefined||v===null||String(v).trim()==='');
+  });
+}
+
+function jsonForDisplay(v){ return JSON.stringify(v??{},null,2); }
+
+function levenshtein(a,b){
+  const row=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){
+    let prev=row[0]; row[0]=i;
+    for(let j=1;j<=b.length;j++){
+      const temp=row[j];
+      row[j]=a[i-1]===b[j-1]?prev:1+Math.min(prev,row[j],row[j-1]);
+      prev=temp;
+    }
+  }
+  return row[b.length];
+}
+
+function suggestMethods(methods,query,limit=4){
+  const needle=query.trim().toLowerCase(); if(!needle) return [];
+  return [...methods].map(m=>{
+    const name=m.name.toLowerCase();
+    const dist=name.includes(needle)||needle.includes(name)?0:levenshtein(name,needle);
+    return {method:m,dist};
+  }).sort((a,b)=>a.dist-b.dist).slice(0,limit).map(e=>e.method);
+}
+
+/* ===== TYPE SCHEMA (from typeSchema.ts) ===== */
+const MAX_NODE_DEPTH = 14;
+
+function splitUnion(raw){
+  if(/\s+or\s+/i.test(raw)) return raw.split(/\s+or\s+/i).map(p=>p.trim()).filter(Boolean);
+  if(raw.includes(',')&&/\band\b/i.test(raw)){
+    const parts=raw.split(/\s*,\s*|\s+and\s+/i).map(p=>p.trim()).filter(Boolean);
+    if(parts.length>1) return parts;
+  }
+  return [raw];
+}
+
+function parseTypeNode(raw,schema,depth=0){
+  const trimmed=raw.trim(); if(!trimmed) return {kind:'unknown',raw:trimmed};
+  if(depth>MAX_NODE_DEPTH) return {kind:'unknown',raw:trimmed};
+  const am=/^Array of\s+(.+)$/i.exec(trimmed);
+  if(am) return {kind:'array',of:parseTypeNode(am[1],schema,depth+1)};
+  const branches=splitUnion(trimmed);
+  if(branches.length>1) return {kind:'union',branches:branches.map(b=>parseTypeNode(b,schema,depth+1))};
+  if(primitiveTypeNames.has(trimmed)) return {kind:'primitive',name:trimmed};
+  const found=schema.types.find(t=>t.name===trimmed);
+  if(found){
+    if(found.fields.length===0&&!isPlaceholderLeafType(found)){
+      const subtypes=deriveUnionSubtypes(found,schema);
+      if(subtypes.length>0) return {kind:'union',branches:subtypes.map(s=>parseTypeNode(s.name,schema,depth+1))};
+    }
+    return {kind:'custom',type:found};
+  }
+  return {kind:'unknown',raw:trimmed};
+}
+
+const KNOWN_PLACEHOLDER_LEAF_NAMES = new Set([
+  'CommunityChatRemoved','ForumTopicClosed','ForumTopicReopened',
+  'GeneralForumTopicHidden','GeneralForumTopicUnhidden','VideoChatStarted','CallbackGame'
+]);
+function isPlaceholderLeafType(type){ return KNOWN_PLACEHOLDER_LEAF_NAMES.has(type.name)||/holds no information/i.test(type.description); }
+
+function deriveUnionSubtypes(base,schema){
+  const candidates=schema.types.filter(t=>t.name!==base.name&&t.name.startsWith(base.name)&&t.fields.length>0);
+  if(candidates.length===0) return [];
+  const counts=new Map();
+  candidates.forEach(c=>{ const fn=c.fields[0].name; counts.set(fn,(counts.get(fn)||0)+1); });
+  let domName='',domCount=0;
+  for(const [n,c] of counts){ if(c>domCount){ domName=n; domCount=c; } }
+  if(domCount<2) return [];
+  return candidates.filter(c=>c.fields[0].name===domName);
+}
+
+function fieldNode(field,schema,depth=0){ return parseTypeNode(field.type,schema,depth); }
+function bottomType(node){ let c=node; while(c.kind==='array') c=c.of; return c; }
+
+function isResolvableBranch(node){ const b=bottomType(node); if(b.kind==='custom') return true; if(b.kind==='union') return b.branches.some(isResolvableBranch); return false; }
+function isRenderableBranch(node){ switch(node.kind){ case 'primitive':case 'array':return true; case 'custom':return node.type.fields.length>0; case 'union':return node.branches.some(isRenderableBranch); case 'unknown':return false; } }
+function isBuildableBranch(node){ if(isResolvableBranch(node)) return true; return node.kind==='array'&&node.of.kind==='primitive'; }
+function topLevelBranches(node){ return node.kind==='union'?node.branches:[node]; }
+function resolvableVariants(typeString,schema){ const root=parseTypeNode(typeString,schema); return topLevelBranches(root).filter(isBuildableBranch); }
+function branchLabel(node){ switch(node.kind){ case 'custom':return node.type.name; case 'primitive':return node.name; case 'array':return 'Array of '+branchLabel(node.of); case 'union':return node.branches.map(branchLabel).join(' or '); case 'unknown':return node.raw||'Unknown'; } }
+
+function defaultForNode(node,schema,depth=0,visited=[]){
+  if(depth>MAX_NODE_DEPTH) return '';
+  switch(node.kind){
+    case 'primitive': if(node.name==='Boolean') return false; if(node.name==='True') return true; return '';
+    case 'unknown': return '';
+    case 'custom': { if(isDeadEndCustom(node,visited)) return {}; const nv=[...visited,node.type.name]; const obj={}; for(const f of node.type.fields){ obj[f.name]=defaultForNode(fieldNode(f,schema,depth+1),schema,depth+1,nv); } return obj; }
+    case 'array': return [];
+    case 'union': return {variant:0,value:defaultForNode(node.branches[0],schema,depth,visited)};
+  }
+}
+function isDeadEndCustom(node,visited){ return node.type.fields.length===0||visited.includes(node.type.name); }
+
+function matchUnionBranch(branches,raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)) return 0;
+  const keys=new Set(Object.keys(raw)); let best=0,bestScore=-1;
+  branches.forEach((branch,idx)=>{
+    const leaf=bottomType(branch);
+    const fieldNames=leaf.kind==='custom'?leaf.type.fields.map(f=>f.name):[];
+    const score=fieldNames.filter(n=>keys.has(n)).length;
+    if(score>bestScore){ bestScore=score; best=idx; }
+  });
+  return best;
+}
+
+function seedForNode(node,schema,raw,depth=0,visited=[]){
+  if(depth>MAX_NODE_DEPTH) return defaultForNode(node,schema,depth,visited);
+  switch(node.kind){
+    case 'primitive': { if(node.name==='Boolean'||node.name==='True') return typeof raw==='boolean'?raw:defaultForNode(node,schema,depth,visited); if(typeof raw==='string') return raw; if(typeof raw==='number'&&Number.isFinite(raw)) return String(raw); return ''; }
+    case 'unknown': { if(raw===undefined) return ''; try{return JSON.stringify(raw);}catch{return '';} }
+    case 'custom': { if(isDeadEndCustom(node,visited)){ if(raw&&typeof raw==='object') return raw; const t=String(raw||'').trim(); if(!t) return {}; try{return JSON.parse(t);}catch{return {}} } if(!raw||typeof raw!=='object'||Array.isArray(raw)) return defaultForNode(node,schema,depth,visited); const nv=[...visited,node.type.name]; const source=raw,obj={}; for(const f of node.type.fields){ const child=fieldNode(f,schema,depth+1); obj[f.name]=f.name in source?seedForNode(child,schema,source[f.name],depth+1,nv):defaultForNode(child,schema,depth+1,nv); } return obj; }
+    case 'array': { if(!Array.isArray(raw)) return []; return raw.map(item=>seedForNode(node.of,schema,item,depth+1,visited)); }
+    case 'union': { const variant=matchUnionBranch(node.branches,raw); return {variant,value:seedForNode(node.branches[variant],schema,raw,depth,visited)}; }
+  }
+}
+
+function isEmptySerialized(value,required){
+  if(value===undefined) return true; if(value==='') return true; if(value===false&&!required) return true; if(Array.isArray(value)&&value.length===0&&!required) return true; if(!required&&value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===0) return true; return false;
+}
+
+function serializeNode(node,schema,value,depth=0,visited=[]){
+  if(depth>MAX_NODE_DEPTH) return undefined;
+  switch(node.kind){
+    case 'primitive': { if(node.name==='Boolean'||node.name==='True') return value===true; if(node.name==='Integer'){ const t=String(value??'').trim(); if(!t) return undefined; const p=Number.parseInt(t,10); return Number.isNaN(p)?undefined:p; } if(node.name==='Float'){ const t=String(value??'').trim(); if(!t) return undefined; const p=Number.parseFloat(t); return Number.isNaN(p)?undefined:p; } const t=String(value??'').trim(); return t===''?undefined:t; }
+    case 'unknown': { const t=String(value??'').trim(); if(!t) return undefined; try{return JSON.parse(t);}catch{return t;} }
+    case 'custom': { if(isDeadEndCustom(node,visited)){ if(value&&typeof value==='object') return value; const t=String(value??'').trim(); if(!t) return undefined; try{return JSON.parse(t);}catch{return undefined;} } if(!value||typeof value!=='object') return undefined; const nv=[...visited,node.type.name]; const source=value,obj={}; for(const f of node.type.fields){ const child=fieldNode(f,schema,depth+1); const ser=serializeNode(child,schema,source[f.name],depth+1,nv); if(isEmptySerialized(ser,f.required)) continue; obj[f.name]=ser; } return obj; }
+    case 'array': { if(!Array.isArray(value)) return undefined; return value.map(item=>serializeNode(node.of,schema,item,depth+1,visited)).filter(item=>item!==undefined&&item!==''); }
+    case 'union': { if(!value||typeof value!=='object') return undefined; const uv=value; const branch=node.branches[uv.variant]; if(!branch) return undefined; return serializeNode(branch,schema,uv.value,depth,visited); }
+  }
+}
+
+function isLongTextField(field){ return field.name==='text'||field.name.includes('caption')||field.description.length>120; }
+function summarizeCustomValue(node,value,fallback){ if(node.kind!=='custom'||!value||typeof value!=='object') return fallback; const source=value; for(const f of node.type.fields){ if(/^(text|title|name|command|label|question)$/i.test(f.name)){ const c=source[f.name]; if(typeof c==='string'&&c.trim()) return c.trim(); } } return fallback; }
+
+/* ===== JSON HIGHLIGHTER ===== */
+function escapeHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+const NUM_RE=/-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/y;
+const KW_RE=/true|false|null/y;
+const WS_RE=/\s+/y;
+function span(cls,raw){ return '<span class="'+cls+'">'+escapeHtml(raw)+'</span>'; }
+function readStringLiteral(source,start){
+  let i=start+1;
+  while(i<source.length){ const ch=source[i]; if(ch==='\\'){ i+=2; continue; } if(ch==='"'){ i+=1; break; } i+=1; }
+  return {raw:source.slice(start,i),end:i};
+}
+function highlightJson(source){
+  if(!source) return ''; let out=''; let i=0; const len=source.length;
+  while(i<len){ const ch=source[i]; WS_RE.lastIndex=i; const ws=WS_RE.exec(source); if(ws){ out+=escapeHtml(ws[0]); i+=ws[0].length; continue; } if(ch==='"'){ const {raw,end}=readStringLiteral(source,i); let j=end; while(j<len&&/\s/.test(source[j])) j++; const isKey=source[j]===':'; out+=span(isKey?'tok-key':'tok-string',raw); i=end; continue; } if(ch==='{'||ch==='}'||ch==='['||ch===']'||ch===':'||ch===','){ out+=span('tok-punct',ch); i+=1; continue; } KW_RE.lastIndex=i; const kw=KW_RE.exec(source); if(kw){ out+=span(kw[0]==='null'?'tok-null':'tok-bool',kw[0]); i+=kw[0].length; continue; } NUM_RE.lastIndex=i; const num=NUM_RE.exec(source); if(num&&num[0].length>0){ out+=span('tok-number',num[0]); i+=num[0].length; continue; } out+=escapeHtml(ch); i+=1; }
+  return out;
+}
+
+/* ===== UI RENDERERS ===== */
+function notify(tone,title,message){
+  const toast=document.createElement('div');
+  toast.className='toast toast-'+tone;
+  toast.innerHTML='<div class="toast-title">'+escapeHtml(title)+'</div><div class="toast-msg">'+escapeHtml(message)+'</div>';
+  el.toastStack.appendChild(toast);
+  setTimeout(()=>{ toast.remove(); },4200);
+}
+
+function renderSidebar(){
+  if(!state.schema){ el.methodList.innerHTML='<div class="loading">Loading...</div>'; return; }
+  const methods=state.schema.methods||[];
+  const cats=['All',...new Set(methods.map(m=>m.category))];
+  if(el.categorySelect.options.length!==cats.length){
+    el.categorySelect.innerHTML=cats.map(c=>'<option>'+escapeHtml(c)+'</option>').join('');
+    el.categorySelect.value=state.category;
+  }
+  const q=state.search.trim().toLowerCase();
+  const filtered=methods.filter(m=>{
+    const catMatch=state.category==='All'||m.category===state.category;
+    const qMatch=!q||m.name.toLowerCase().includes(q)||m.description.toLowerCase().includes(q)||m.parameters.some(p=>p.name.toLowerCase().includes(q));
+    return catMatch&&qMatch;
+  });
+  el.sidebarFooter.textContent=methods.length+' methods \u2022 '+filtered.length+' shown';
+  el.methodList.innerHTML=filtered.map(m=>{
+    const active=state.selected&&state.selected.name===m.name?'active':'';
+    return '<button class="method-item '+active+'" data-name="'+escapeHtml(m.name)+'">'+
+      '<div>'+escapeHtml(m.name)+'</div>'+
+      '<small>'+escapeHtml(m.description.slice(0,80))+(m.description.length>80?'...':'')+'</small>'+
+    '</button>';
+  }).join('');
+  el.methodList.querySelectorAll('.method-item').forEach(btn=>{
+    btn.onclick=()=>selectMethodByName(btn.dataset.name);
+  });
+}
+
+function selectMethodByName(name){
+  if(!state.schema) return;
+  const method=state.schema.methods.find(m=>m.name===name)||null;
+  selectMethod(method);
+}
+
+function selectMethod(method){
+  state.selected=method;
+  state.values=defaultValues(method);
+  state.requestJson=jsonForDisplay(buildPreviewPayload(method,state.values));
+  state.requestJsonError='';
+  state.formError='';
+  state.response={status:'waiting',payload:null,error:''};
+  state.notFound=false;
+  state.notFoundPath='';
+  updateDocumentMeta(method);
+  if(method){
+    const url='./'+method.name;
+    if(location.pathname!==url&&location.pathname!==url.replace(/^\./,'')) history.pushState(null,'',url);
+  }else{
+    if(location.pathname!=='./'&&location.pathname!=='/') history.pushState(null,'','./');
+  }
+  render();
+}
+
+function updateDocumentMeta(method){
+  document.title=method?method.name+' \u2014 Telebot Studio':'Telebot Studio';
+  const meta=document.querySelector('meta[name="description"]');
+  if(meta) meta.setAttribute('content',method?'Build and test '+method.name:'Telegram Bot API workspace');
+}
+
+function renderMethodPanel(){
+  if(state.notFound){ el.emptyState.style.display='none'; el.methodPanel.style.display='none'; el.notFound.style.display='block'; return; }
+  if(!state.selected){ el.emptyState.style.display='block'; el.methodPanel.style.display='none'; el.notFound.style.display='none'; return; }
+  el.emptyState.style.display='none'; el.methodPanel.style.display='block'; el.notFound.style.display='none';
+
+  const m=state.selected;
+  el.methodName.textContent=m.name;
+  el.methodDesc.textContent=m.description;
+  el.docLink.href=m.officialUrl||state.schema.source||'https://core.telegram.org/bots/api';
+
+  renderFields();
+  syncRequestFromValues();
+  renderResponse();
+}
+
+function renderFields(){
+  const container=el.fieldsContainer; container.innerHTML='';
+  if(!state.selected) return;
+  state.selected.parameters.forEach((param,idx)=>{
+    const kind=inferKind(param);
+    const group=document.createElement('div'); group.className='field-group';
+
+    const label=document.createElement('label'); label.className='field-label';
+    label.innerHTML=escapeHtml(displayName(param.name))+(param.required?'<span class="required">*</span>':'')+'<span class="type-tag">'+escapeHtml(param.type)+'</span>';
+    group.appendChild(label);
+
+    if(param.description){ const d=document.createElement('div'); d.className='field-desc'; d.textContent=param.description; group.appendChild(d); }
+
+    const control=createFieldControl(param,kind,idx);
+    group.appendChild(control);
+    container.appendChild(group);
+  });
+}
+
+function createFieldControl(param,kind,idx){
+  const value=state.values[param.name];
+  if(kind==='boolean'){
+    const wrap=document.createElement('label'); wrap.className='checkbox-wrap';
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!value;
+    cb.onchange=e=>{ state.values[param.name]=e.target.checked; onValueChange(); };
+    wrap.appendChild(cb); wrap.appendChild(document.createTextNode('Enabled')); return wrap;
+  }
+  if(kind==='file'){
+    const wrap=document.createElement('div');
+    const fv=value||{mode:'text',text:'',file:null};
+    const modeWrap=document.createElement('div'); modeWrap.style.cssText='display:flex;gap:8px;margin-bottom:8px;';
+    const btnText=document.createElement('button'); btnText.className='file-mode-btn'+(fv.mode==='text'?' active':''); btnText.textContent='Text';
+    const btnFile=document.createElement('button'); btnFile.className='file-mode-btn'+(fv.mode==='file'?' active':''); btnFile.textContent='File';
+    btnText.onclick=()=>{ state.values[param.name]={...fv,mode:'text'}; onValueChange(); renderFields(); };
+    btnFile.onclick=()=>{ state.values[param.name]={...fv,mode:'file'}; onValueChange(); renderFields(); };
+    modeWrap.appendChild(btnText); modeWrap.appendChild(btnFile); wrap.appendChild(modeWrap);
+    if(fv.mode==='text'){
+      const inp=document.createElement('input'); inp.className='field-control'; inp.value=fv.text||''; inp.placeholder='file_id or URL';
+      inp.oninput=e=>{ state.values[param.name]={...fv,text:e.target.value}; onValueChange(); };
+      wrap.appendChild(inp);
+    }else{
+      const row=document.createElement('div'); row.className='file-field';
+      const fileInp=document.createElement('input'); fileInp.type='file'; fileInp.accept=fileAccept(param);
+      fileInp.onchange=e=>{ state.values[param.name]={...fv,file:e.target.files[0]||null}; onValueChange(); renderFields(); };
+      const nameSpan=document.createElement('span'); nameSpan.className='file-name'; nameSpan.textContent=fv.file?fv.file.name:'No file selected';
+      row.appendChild(fileInp); row.appendChild(nameSpan); wrap.appendChild(row);
+    }
+    return wrap;
+  }
+  if(kind==='json'){
+    const node=fieldNode(param,state.schema);
+    const variants=resolvableVariants(param.type,state.schema);
+    if(variants.length>0&&isRenderableBranch(node)){
+      return renderBuilder(param,node,variants,value,idx);
+    }
+    const ta=document.createElement('textarea'); ta.className='field-control'; ta.value=typeof value==='string'?value:jsonForDisplay(value); ta.placeholder='{}';
+    ta.oninput=e=>{ state.values[param.name]=e.target.value; onValueChange(); };
+    return ta;
+  }
+  if(kind==='textarea'){
+    const ta=document.createElement('textarea'); ta.className='field-control'; ta.value=value||'';
+    ta.oninput=e=>{ state.values[param.name]=e.target.value; onValueChange(); };
+    return ta;
+  }
+  if(kind==='number'){
+    const inp=document.createElement('input'); inp.type='number'; inp.className='field-control'; inp.value=value||'';
+    inp.oninput=e=>{ state.values[param.name]=e.target.value; onValueChange(); };
+    return inp;
+  }
+  const inp=document.createElement('input'); inp.type='text'; inp.className='field-control'; inp.value=value||'';
+  inp.oninput=e=>{ state.values[param.name]=e.target.value; onValueChange(); };
+  return inp;
+}
+
+function renderBuilder(param,node,variants,value,idx){
+  const wrap=document.createElement('div');
+  const card=document.createElement('div'); card.className='builder-card';
+  const header=document.createElement('div'); header.className='builder-header';
+  const title=document.createElement('div'); title.className='builder-title'; title.textContent='Builder';
+  header.appendChild(title); card.appendChild(header);
+
+  const branches=topLevelBranches(node);
+  const buildable=branches.filter(isBuildableBranch);
+  if(buildable.length>1){
+    const tabs=document.createElement('div'); tabs.className='builder-branch-tabs';
+    const current=value&&typeof value==='object'&&'variant' in value?value.variant:0;
+    buildable.forEach((branch,bidx)=>{
+      const tab=document.createElement('button'); tab.className='builder-branch-tab'+(bidx===current?' active':''); tab.textContent=branchLabel(branch);
+      tab.onclick=()=>{ state.values[param.name]={variant:bidx,value:defaultForNode(branch,state.schema)}; onValueChange(); renderFields(); };
+      tabs.appendChild(tab);
+    });
+    card.appendChild(tabs);
+  }
+
+  const activeBranch=buildable[(value&&typeof value==='object'&&'variant' in value)?value.variant:0]||buildable[0];
+  if(activeBranch){
+    const editor=renderTypeEditor(activeBranch,state.schema,value&&typeof value==='object'&&'value' in value?value.value:defaultForNode(activeBranch,state.schema),(newVal)=>{
+      const variant=(value&&typeof value==='object'&&'variant' in value)?value.variant:0;
+      state.values[param.name]={variant,value:newVal}; onValueChange();
+    });
+    card.appendChild(editor);
+  }
+  wrap.appendChild(card);
+  return wrap;
+}
+
+function renderTypeEditor(node,schema,rawValue,onChange,depth=0){
+  const wrap=document.createElement('div');
+  if(depth>MAX_NODE_DEPTH){ wrap.textContent='...'; return wrap; }
+
+  switch(node.kind){
+    case 'primitive':{
+      if(node.name==='Boolean'||node.name==='True'){
+        const label=document.createElement('label'); label.className='checkbox-wrap';
+        const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!rawValue;
+        cb.onchange=e=>onChange(e.target.checked);
+        label.appendChild(cb); label.appendChild(document.createTextNode(node.name)); wrap.appendChild(label); break;
+      }
+      const inp=document.createElement('input'); inp.className='field-control'; inp.style.marginTop='4px';
+      inp.value=rawValue??''; inp.placeholder=node.name;
+      inp.oninput=e=>onChange(e.target.value);
+      wrap.appendChild(inp); break;
+    }
+    case 'array':{
+      const arr=Array.isArray(rawValue)?rawValue:[];
+      const list=document.createElement('div'); list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='8px';
+      arr.forEach((item,i)=>{
+        const row=document.createElement('div'); row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='flex-start';
+        const editor=renderTypeEditor(node.of,schema,item,(v)=>{ const next=[...arr]; next[i]=v; onChange(next); },depth+1);
+        editor.style.flex='1';
+        const rm=document.createElement('button'); rm.className='builder-remove-btn'; rm.textContent='\u00d7';
+        rm.onclick=()=>{ const next=[...arr]; next.splice(i,1); onChange(next); };
+        row.appendChild(editor); row.appendChild(rm); list.appendChild(row);
+      });
+      const add=document.createElement('button'); add.className='builder-add-btn'; add.textContent='+ Add item';
+      add.onclick=()=>onChange([...arr,defaultForNode(node.of,schema,depth+1)]);
+      wrap.appendChild(list); wrap.appendChild(add); break;
+    }
+    case 'custom':{
+      if(node.type.fields.length===0){ wrap.textContent='(empty)'; break; }
+      const obj=rawValue&&typeof rawValue==='object'&&!Array.isArray(rawValue)?rawValue:{};
+      node.type.fields.forEach(field=>{
+        const fwrap=document.createElement('div'); fwrap.style.marginBottom='10px';
+        const flabel=document.createElement('div'); flabel.style.fontSize='0.8rem'; flabel.style.fontWeight='600'; flabel.style.color='var(--text-secondary)'; flabel.style.marginBottom='4px';
+        flabel.textContent=displayName(field.name)+(field.required?' *':'');
+        fwrap.appendChild(flabel);
+        const editor=renderTypeEditor(fieldNode(field,schema,depth+1),schema,obj[field.name],(v)=>{ onChange({...obj,[field.name]:v}); },depth+1);
+        fwrap.appendChild(editor); wrap.appendChild(fwrap);
+      });
+      break;
+    }
+    case 'union':{
+      const uv=rawValue&&typeof rawValue==='object'&&'variant' in rawValue?rawValue:{variant:0,value:defaultForNode(node.branches[0],schema,depth+1)};
+      const tabs=document.createElement('div'); tabs.className='builder-branch-tabs';
+      node.branches.forEach((branch,bidx)=>{
+        if(!isRenderableBranch(branch)) return;
+        const tab=document.createElement('button'); tab.className='builder-branch-tab'+(bidx===uv.variant?' active':''); tab.textContent=branchLabel(branch);
+        tab.onclick=()=>onChange({variant:bidx,value:defaultForNode(branch,schema,depth+1)});
+        tabs.appendChild(tab);
+      });
+      wrap.appendChild(tabs);
+      const active=node.branches[uv.variant];
+      if(active){ const editor=renderTypeEditor(active,schema,uv.value,(v)=>onChange({...uv,value:v}),depth+1); wrap.appendChild(editor); }
+      break;
+    }
+    default:{
+      const ta=document.createElement('textarea'); ta.className='field-control'; ta.value=rawValue??''; ta.placeholder='JSON / text';
+      ta.oninput=e=>onChange(e.target.value); wrap.appendChild(ta);
+    }
+  }
+  return wrap;
+}
+
+/* ===== SYNC LOGIC ===== */
+function onValueChange(){
+  if(state.syncingFromRequest) return;
+  state.syncingFromValues=true;
+  try{
+    const payload=buildPreviewPayload(state.selected,state.values);
+    const base=readRequestPayload();
+    const known=new Set((state.selected?.parameters||[]).map(p=>p.name));
+    Object.keys(payload).forEach(k=>{ if(known.has(k)) base[k]=payload[k]; });
+    Object.keys(base).forEach(k=>{ if(!known.has(k)&&base[k]===undefined) delete base[k]; });
+    state.requestJson=jsonForDisplay(base);
+    state.requestJsonError='';
+    state.formError='';
+    el.requestJson.value=state.requestJson;
+    el.formError.style.display='none';
+  }catch(err){
+    console.error(err);
+  }finally{
+    state.syncingFromValues=false;
+  }
+}
+
+function readRequestPayload(){
+  try{ return parseRequestJson(el.requestJson.value); }catch{ return {}; }
+}
+
+function syncRequestFromValues(){
+  state.requestJson=jsonForDisplay(buildPreviewPayload(state.selected,state.values));
+  el.requestJson.value=state.requestJson;
+}
+
+function onRequestJsonChange(){
+  if(state.syncingFromValues) return;
+  state.syncingFromRequest=true;
+  try{
+    const payload=parseRequestJson(el.requestJson.value);
+    state.requestJsonError='';
+    state.formError='';
+    el.formError.style.display='none';
+    if(!state.selected) return;
+    const known=new Set(state.selected.parameters.map(p=>p.name));
+    const next={...state.values};
+    state.selected.parameters.forEach(param=>{
+      const kind=inferKind(param);
+      if(!(param.name in payload)){
+        if(kind==='boolean') next[param.name]=false;
+        else if(kind==='file') next[param.name]={mode:'text',text:'',file:null};
+        else next[param.name]='';
+        return;
+      }
+      const raw=payload[param.name];
+      if(kind==='boolean') next[param.name]=!!raw;
+      else if(kind==='file') next[param.name]={mode:'text',text:typeof raw==='string'?raw:jsonForDisplay(raw),file:null};
+      else if(kind==='json'){
+        const node=fieldNode(param,state.schema);
+        const variants=resolvableVariants(param.type,state.schema);
+        if(variants.length>0&&isRenderableBranch(node)){
+          const seed=seedForNode(node,state.schema,raw);
+          next[param.name]=seed;
+        }else{
+          next[param.name]=typeof raw==='object'?jsonForDisplay(raw):String(raw);
+        }
+      }else if(kind==='number') next[param.name]=typeof raw==='number'?String(raw):String(raw||'');
+      else next[param.name]=typeof raw==='object'?jsonForDisplay(raw):String(raw||'');
+    });
+    state.values=next;
+    renderFields();
+  }catch(err){
+    state.requestJsonError=err.message;
+    state.formError=err.message;
+    el.formError.textContent=err.message;
+    el.formError.style.display='block';
+  }finally{
+    state.syncingFromRequest=false;
+  }
+}
+
+function renderResponse(){
+  if(state.response.status==='waiting'){
+    el.responseBlock.innerHTML='<span class="tok-null">Waiting...</span>';
+    return;
+  }
+  if(state.response.status==='error'){
+    el.responseBlock.innerHTML='<span class="tok-string">'+escapeHtml(state.response.error||'')+'</span>';
+    return;
+  }
+  el.responseBlock.innerHTML=highlightJson(jsonForDisplay(state.response.payload));
+}
+
+/* ===== API SUBMIT ===== */
+async function handleSubmit(e){
+  e.preventDefault();
+  if(!state.selected) return;
+
+  const token=normalizeToken(el.tokenInput.value);
+  if(!token){
+    notify('error','Missing Token','Please enter your bot token.');
+    el.tokenInput.focus(); return;
+  }
+  localStorage.setItem('telebot-token',el.tokenInput.value);
+
+  const payload=buildPayload(state.selected,state.values);
+  const missing=missingRequiredFromPayload(state.selected,payload);
+  if(missing.length>0){
+    state.formError='Missing required fields: '+missing.map(p=>p.name).join(', ');
+    el.formError.textContent=state.formError;
+    el.formError.style.display='block';
+    notify('error','Missing Fields',state.formError);
+    return;
+  }
+  state.formError='';
+  el.formError.style.display='none';
+
+  if(dangerousMethods.has(state.selected.name)){
+    notify('warning','Dangerous Method',state.selected.name+' may change your bot state. Proceed with caution.');
+  }
+
+  state.response={status:'loading',payload:null,error:''};
+  renderResponse();
+  el.btnSubmit.disabled=true;
+  el.btnSubmit.textContent='\u23f3 Sending...';
+
+  try{
+    const init=buildRequestInitFromPayload(payload);
+    const res=await fetch('https://api.telegram.org/bot'+token+'/'+state.selected.name,{
+      method:'POST',
+      headers:init.headers||{},
+      body:init.body,
+    });
+    const data=await res.json();
+    state.response={status:'ok',payload:data,error:''};
+    if(!data.ok) notify('error','API Error',data.description||'Unknown error');
+    else notify('success','Success',data.description||'Request completed');
+  }catch(err){
+    state.response={status:'error',payload:null,error:err.message};
+    notify('error','Request Failed',err.message);
+  }finally{
+    el.btnSubmit.disabled=false;
+    el.btnSubmit.textContent='\u{1F4E4} Submit to Telegram';
+    renderResponse();
+  }
+}
+
+/* ===== ROUTING ===== */
+function handleRoute(){
+  const path=location.pathname.replace(/^\//,'').replace(/^\./,'');
+  if(!path||path===''){
+    if(state.selected) selectMethod(null);
+    return;
+  }
+  const name=path.split('/').filter(Boolean)[0];
+  if(!name) return;
+  if(!state.schema){ return; }
+  const method=state.schema.methods.find(m=>m.name===name);
+  if(method){
+    if(!state.selected||state.selected.name!==method.name) selectMethod(method);
+  }else{
+    state.notFound=true;
+    state.notFoundPath=name;
+    state.selected=null;
+    state.values={};
+    state.requestJson='{}';
+    el.notFoundPath.textContent='/'+name;
+    const suggestions=suggestMethods(state.schema.methods,name,6);
+    el.suggestionList.innerHTML=suggestions.map(m=>'<button class="suggestion-chip" data-name="'+escapeHtml(m.name)+'">'+escapeHtml(m.name)+'</button>').join('');
+    el.suggestionList.querySelectorAll('.suggestion-chip').forEach(btn=>{
+      btn.onclick=()=>selectMethodByName(btn.dataset.name);
+    });
+    render();
+  }
+}
+
+function render(){
+  renderSidebar();
+  renderMethodPanel();
+}
+
+/* ===== EVENT LISTENERS ===== */
+el.searchInput.addEventListener('input',e=>{ state.search=e.target.value; renderSidebar(); });
+el.categorySelect.addEventListener('change',e=>{ state.category=e.target.value; renderSidebar(); });
+
+el.tokenInput.value=state.token;
+el.tokenInput.addEventListener('input',e=>{ state.token=e.target.value; localStorage.setItem('telebot-token',e.target.value); });
+el.tokenToggle.addEventListener('click',()=>{
+  const isPwd=el.tokenInput.type==='password';
+  el.tokenInput.type=isPwd?'text':'password';
+  el.tokenToggle.textContent=isPwd?'Hide':'Show';
+});
+
+el.requestJson.addEventListener('input',onRequestJsonChange);
+
+el.btnSubmit.addEventListener('click',handleSubmit);
+
+el.copyReq.addEventListener('click',()=>{
+  navigator.clipboard.writeText(el.requestJson.value).then(()=>notify('success','Copied','Request JSON copied to clipboard'));
+});
+el.copyRes.addEventListener('click',()=>{
+  const text=state.response.payload?jsonForDisplay(state.response.payload):(state.response.error||'');
+  navigator.clipboard.writeText(text).then(()=>notify('success','Copied','Response copied to clipboard'));
+});
+
+el.btnMenu.addEventListener('click',()=>el.sidebar.classList.toggle('open'));
+
+el.btnTheme.addEventListener('click',()=>{
+  const themes=['system','light','dark'];
+  const next=themes[(themes.indexOf(state.theme)+1)%themes.length];
+  state.theme=next;
+  document.documentElement.setAttribute('data-theme',next==='system'?'':next);
+  localStorage.setItem('telebot-theme',next);
+});
+
+el.btnPrivacy.addEventListener('click',()=>el.privacyModal.style.display='grid');
+el.privacyOk.addEventListener('click',()=>el.privacyModal.style.display='none');
+el.privacyModal.addEventListener('click',e=>{ if(e.target===el.privacyModal) el.privacyModal.style.display='none'; });
+
+window.addEventListener('popstate',handleRoute);
+
+el.logoLink.addEventListener('click',e=>{ e.preventDefault(); selectMethod(null); });
+
+/* ===== THEME INIT ===== */
+if(state.theme!=='system') document.documentElement.setAttribute('data-theme',state.theme);
+
+/* ===== SCHEMA LOAD ===== */
+async function loadSchema(){
+  try{
+    const res=await fetch(SCHEMA_URL);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    state.schema=await res.json();
+    state.loadingSchema=false;
+    handleRoute();
+  }catch(err){
+    console.error('Failed to load schema:',err);
+    el.methodList.innerHTML='<div class="loading" style="color:var(--danger)">Failed to load schema. Make sure schema/bot-api.json exists.</div>';
+    notify('error','Schema Error','Could not load bot-api.json. Check console.');
+  }
+}
+
+loadSchema();
+</script>
+</body>
+</html>
