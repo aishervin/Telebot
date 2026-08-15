@@ -77,7 +77,7 @@ const { onKeydown } = useFocusTrap(dialogRef, dismiss);
               class="min-h-0 flex-1 space-y-4 overflow-y-auto border-t border-ink-950/[0.08] px-6 py-5 text-sm leading-6 dark:border-paper-50/[0.08]"
             >
               <p class="text-ink-950 dark:text-paper-50">
-                Bot Studio has <span class="font-black">no backend</span>. There is no server
+                ☬TELEbot has <span class="font-black">no backend</span>. There is no server
                 operated by this project sitting between you and Telegram — every request you build
                 here is sent
                 <span class="font-black">directly from your browser to Telegram's own servers</span
@@ -124,7 +124,7 @@ const { onKeydown } = useFocusTrap(dialogRef, dismiss);
                 class="inline-flex items-center gap-1.5 rounded-lg border border-signal-lime bg-signal-lime px-4 py-2 text-sm font-black text-ink-950 transition hover:-translate-y-0.5 hover:brightness-95"
                 @click="dismiss"
               >
-                <ShieldCheck class="h-4 w-4" /> Got it, understood
+                <ShieldCheck class="h-4 w-4" /> YOU 🤝 SHΞN™
               </button>
             </div>
           </div>
