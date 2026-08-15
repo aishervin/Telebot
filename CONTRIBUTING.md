@@ -1,6 +1,6 @@
 # Contributing
 
-Glad you're interested — we'd love your help improving Bot Studio.
+Glad you're interested — we'd love your help improving TELEbot Studio.
 
 ## Setup Workflow
 
@@ -33,5 +33,3 @@ npm run dev
 Branch off `main`, commit using [Conventional Commits](https://www.conventionalcommits.org/), and open a pull request.
 
 ---
-
-Built with the help of [Claude](https://claude.ai).
