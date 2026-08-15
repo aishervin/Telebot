@@ -304,8 +304,9 @@ onUnmounted(() => {
           rel="noreferrer"
           aria-label="SHΞN™ on Telegram"
         >
-          SHΞN™ made
+          SHΞN™
         </a>
+        made
       </div>
 
       <div
