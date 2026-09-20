@@ -16,7 +16,7 @@ function resolveOutDir(config: ResolvedConfig): string {
     : path.resolve(config.root, config.build.outDir);
 }
 
-/**
+/** 
  * The compiled Tailwind stylesheet is tiny (a few KB gzipped) and, loaded via
  * an external <link rel="stylesheet">, blocks first render on an extra
  * network round-trip. For a bundle this small it's cheaper to inline the
