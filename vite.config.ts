@@ -5,7 +5,10 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig, type Plugin, type ResolvedConfig } from 'vite';
 
 const FONT_EXTENSIONS = /\.(?:ttf|woff2?|otf)$/i;
-// Cloudflare Pages exposes CF_PAGES_URL during builds. Keep a GitHub Pages fallback so\n// the project remains buildable outside Cloudflare as well.\nconst SITE_URL =\n  process.env.CF_PAGES_URL || process.env.SITE_URL || 'https://aishervin.github.io/Telebot/';
+// Cloudflare Pages exposes CF_PAGES_URL during builds. Keep a GitHub Pages fallback so
+// the project remains buildable outside Cloudflare as well.
+const SITE_URL =
+  process.env.CF_PAGES_URL || process.env.SITE_URL || 'https://aishervin.github.io/Telebot/';
 
 function resolveOutDir(config: ResolvedConfig): string {
   return path.isAbsolute(config.build.outDir)
