@@ -19,7 +19,7 @@ Everything runs natively in your browser: your bot token is used exclusively to 
 <div align="center">
 
 ### PRESS
-# [ENTER](https://aishervin.github.io/Telebot)
+# [ENTER](https://telebotic.pages.dev)
 ### TO START
 
 </div>
